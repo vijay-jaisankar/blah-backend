@@ -9,7 +9,7 @@ cd $1
 TARGET=$(pwd)
 
 # Download the tsv.gz archive into the target folder
-rm -f *.gz *.txt
+rm -f *.gz *.txt *.tsv
 wget -q "https://datasets.imdbws.com/title.ratings.tsv.gz"
 
 # Extract/Decompress the files

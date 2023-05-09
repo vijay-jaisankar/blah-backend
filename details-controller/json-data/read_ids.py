@@ -4,13 +4,14 @@
 
 import pandas as pd
 import argparse
+from typing import List
 
-def get_all_ids(tsv_path):
+def get_all_ids(tsv_path:str) -> List[str]:
     df = pd.read_csv(tsv_path, sep = "\t")
     ids = df["tconst"]
     return list(ids)
 
-def save_all_ids(ids, out_path):
+def save_all_ids(ids: List[str], out_path:str) -> None:
     with open(out_path, "w") as f:
         for movie in ids:
             f.write(f"{movie}\n")

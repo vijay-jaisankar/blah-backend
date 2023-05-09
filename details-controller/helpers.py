@@ -2,10 +2,11 @@
     Helper functions used in the details controller API.
 """
 import subprocess
-from typing import Optional
+from typing import Optional, List
 import os
 import glob
 import time
+import random
 
 
 """
@@ -48,3 +49,22 @@ def get_id_filename(directory_name: str = "./json-data/data") -> Optional[str]:
         return relative_filename
     
     return None
+
+"""
+    Read the ID file and select k random IDs, where k is a parameter passed to the function
+"""
+def get_random_ids(filename: str, k: int) -> Optional[List[str]]:
+    # Base case
+    if filename is None or k <= 0:
+        return None 
+    
+    # Read the file
+    all_ids = []
+    with open(filename, "r") as f:
+        for line in f.readlines():
+            all_ids.append(line)
+
+    # Get k IDs
+    random_samples = random.sample(all_ids, k = k)
+
+    return random_samples

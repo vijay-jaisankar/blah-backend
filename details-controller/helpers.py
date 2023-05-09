@@ -26,12 +26,12 @@ def execute_download_script(directory_name: str = "data") -> int:
 """
     Get the most recent file and check if 24 hours have elapsed since its creation
 """
-def get_id_filename(directory_name: str = "data") -> Optional[str]:
+def get_id_filename(directory_name: str = "./json-data/data") -> Optional[str]:
     # Get current time stamp
     current_timestamp = int(time.time()) 
 
     # Get all txt files
-    all_text_files = (glob.glob(f"./json-data/{directory_name}/*.txt"))
+    all_text_files = (glob.glob(f"{directory_name}/*.txt"))
 
     # Base case
     if all_text_files is None or len(all_text_files) == 0:
@@ -44,7 +44,7 @@ def get_id_filename(directory_name: str = "data") -> Optional[str]:
 
     # Check if 24 hours have passed
     if current_timestamp - most_recent_file <= 86400:
-        relative_filename = f"./json-data/{directory_name}/ids_{most_recent_file}.txt"
+        relative_filename = f"{directory_name}/ids_{most_recent_file}.txt"
         return relative_filename
     
     return None

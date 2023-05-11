@@ -8,6 +8,9 @@ const app = express();
 const PORT = 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 
+// MongoDB models
+const models = require("./models");
+
 // Request headers
 app.use(cors());
 
@@ -45,8 +48,68 @@ mongoose.connect(
 ).then(() => console.log("MongoDB connected"))
 .catch(err => console.log(err));
 
+// Set up the models
+const Review = mongoose.model('Review', models.reviewSchema);
+const User = mongoose.model('User', models.userSchema);
+
+// Add review
+app.post("/reviews/new/", (req, res) => {
+    // Get Username and Password
+    let movie_id = req.body.movie_id;
+    let review = req.body.review;
+
+    // Base case
+    if (movie_id === null || review === null){
+        return res.sendStatus(401);
+    }
+
+    // Insert into the collection
+    const row = new Review({
+        movie_id: movie_id,
+        review: review,
+    });
+
+    row
+        .save()
+        .then(
+            () => {
+                console.log("Movie review added");
+                res.sendStatus(200);
+            }, 
+            (err) => {
+                console.log("Error adding review");
+                console.log(err)
+                res.sendStatus(500);
+            }
+        );
+});
+
+// Get reviews for a particular movie_id
+app.get("/reviews/fetch", (req, res) => {
+    // Get movie ID
+    let movie_id = req.body.movie_id;
+
+    // Base case
+    if (movie_id === null){
+        return res.sendStatus(401);
+    }
+
+    // Query the collection
+    Review.find({
+        movie_id: movie_id
+    }).then((list) => {
+        if(list){
+            res.send(list);
+        }
+        else{
+            res.send({});
+        }
+    });
+});
+
+
 
 // Run the app
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(`Server Started at ${PORT}`)
 })

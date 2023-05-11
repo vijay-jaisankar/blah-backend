@@ -96,6 +96,32 @@ app.post("/auth/register", (req, res) => {
     })
 })
 
+// Login
+app.post("/auth/login", (req, res) => {
+    // Get email ID and Password
+    let email_id = req.body.email_id.toLowerCase();
+    let password = req.body.password;
+
+    // Base case
+    if (email_id === null || password === null){
+        return res.status(401).send("error in inputs");
+    }
+
+
+    // Check if email_id and password are present in the collection
+    User.find({
+        "email_id": email_id,
+        "password" : password
+    }).then((list) => {
+        if(list.length >= 1){
+            return res.status(200).send("logged in successfully");
+        }
+        else{
+            return res.status(403).send("unauthorised");
+        }
+    })
+})
+
 // Add review
 app.post("/reviews/new/", (req, res) => {
     // Get Username and Password

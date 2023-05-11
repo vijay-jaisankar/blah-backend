@@ -6,6 +6,9 @@ import os
 from dotenv import load_dotenv
 import requests
 import time
+import logging
+
+
 
 from helpers import execute_download_script, get_id_filename, get_random_ids, check_id_validity
 
@@ -79,38 +82,38 @@ def get_details(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -
     Check current validity of a given ID upto a 24 hour SLA
 """
 @app.get("/valid/{item_id}")
-def check_valid(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -> dict:
-    # Call the OMDB API
-    r = requests.get(f"http://www.omdbapi.com/?i={item_id}&apikey={api_key}")
+def check_valid(item_id: str, response: Response, file_path: str = FEED_PATH, api_key: str = OMDB_API_KEY) -> dict:
+    # Check for recent file
+    ids_file = get_id_filename(file_path)
 
-    # Base case
-    if r.status_code != 200:
+    if ids_file is None:
+        current_status_code = execute_download_script(file_path.split("/")[-1])
+
+        # Check for mutex lock
+        while current_status_code != 0:
+            time.sleep(2)
+            current_status_code = execute_download_script(file_path.split("/")[-1])
+
+    # Persistent error
+    ids_file = get_id_filename(file_path)
+    if ids_file is None:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {
-            "message": "invalid"
-        }
-    
-    # Get attributes
-    try:
-        json_description = r.json()
+            "error_message": "Server error"
+    }
 
-        if 'Error' in json_description:
-            response.status_code = status.HTTP_404_NOT_FOUND
-            return {
-                "message": "invalid"
-            } 
-        
-        # Return valid
+    # Check from local file
+    is_valid_flag = check_id_validity(ids_file, item_id)
+    if is_valid_flag:
         return {
             "message": "valid"
         }
-
-    except Exception as e:
-        # Invalid JSON as response due to invalid input
-        response.status_code = status.HTTP_404_NOT_FOUND
+    else:
         return {
             "message": "invalid"
         }
+
+
 
 
 """

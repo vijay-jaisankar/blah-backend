@@ -3,10 +3,15 @@ require('dotenv').config();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
+
+// Bcrypt setup
+const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10
+
 
 // MongoDB models
 const models = require("./models");
@@ -73,28 +78,38 @@ app.post("/auth/register", (req, res) => {
         }
         else{
             // If not, add into the collection
-            const row = new User({
-                email_id: email_id,
-                password: password,
-            });
-
-                row
-                    .save()
-                    .then(
-                        () => {
-                            console.log("User added");
-                            return res.status(200).send("user added");
-                        },
-                        (err) => {
-                            console.log("Error adding User");
-                            console.log(err);
-                            return res.status(500).send("error adding user");
-                        }
-                        
-                    );
+            bcrypt.hash(password, saltRounds, function(err, hash) {
+                if(err) {
+                    console.log("Error hashing password");
+                    return res.status(500).send("error adding user");
                 }
+                else{
+                    console.log(hash);
+                    const row = new User({
+                        email_id: email_id,
+                        password: hash,
+                    });
+        
+                    row
+                        .save()
+                            .then(
+                                () => {
+                                    console.log("User added");
+                                    return res.status(200).send("user added");
+                                },
+                                (err) => {
+                                    console.log("Error adding User");
+                                    console.log(err);
+                                    return res.status(500).send("error adding user");
+                                }
+                                
+                            );
+                        }
+                });
+            }
+        });
     })
-})
+
 
 // Login
 app.post("/auth/login", (req, res) => {
@@ -107,19 +122,24 @@ app.post("/auth/login", (req, res) => {
         return res.status(401).send("error in inputs");
     }
 
-
     // Check if email_id and password are present in the collection
-    User.find({
-        "email_id": email_id,
-        "password" : password
-    }).then((list) => {
-        if(list.length >= 1){
-            return res.status(200).send("logged in successfully");
-        }
-        else{
-            return res.status(403).send("unauthorised");
-        }
-    })
+    else{   
+            User.find({
+                "email_id": email_id,
+            }).then((list) => {
+                if(list.length >= 1){
+                    hashedPassword = list[0]['password'];
+                    bcrypt.compare(password, hashedPassword, function(err, result) {
+                        if(result === true){
+                            return res.status(200).send("logged in successfully");
+                        }
+                        else{
+                            return res.status(403).send("unauthorised");
+                        }
+                    });
+                }
+            })
+    }
 })
 
 // Add review

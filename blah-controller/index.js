@@ -121,6 +121,7 @@ app.post("/auth/register", (req, res) => {
         "email_id": email_id
     }).then((list) => {
         if(list.length >= 1){
+            logger.error(`Register - user ${email_id} already exists`);
             return res.status(403).send("user already exists");
         }
         else{

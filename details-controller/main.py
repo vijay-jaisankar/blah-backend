@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Response, status
 
 
-from typing import Optional
 import os
 from dotenv import load_dotenv
 import requests
 import time
 import logging
+
+logging.basicConfig(filename='./log/python_combined.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 
 
@@ -40,6 +41,7 @@ def get_details(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -
 
     # Base case
     if r.status_code != 200:
+        logging.error("Get details - Non 200 status code while calling OMDB API")
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {
             "error_message": "Server error"
@@ -51,6 +53,7 @@ def get_details(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -
 
         if 'Error' in json_description:
             response.status_code = status.HTTP_404_NOT_FOUND
+            logging.error("Get details - Invalid inputs")
             return {
                 "error_message": "Invalid ID passed"
             } 
@@ -65,6 +68,7 @@ def get_details(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -
             poster = "https://i.imgur.com/oA0yD7d.png" # Default image
 
         # Return JSON
+        logging.info(f"Get details - fetched for {item_id}")
         return {
             "id": item_id,
             "title": title,
@@ -73,6 +77,7 @@ def get_details(item_id: str, response: Response, api_key: str = OMDB_API_KEY) -
     
     except Exception as e:
         # Invalid JSON as response due to invalid input
+        logging.exception(f"Get details - Error {e}")
         response.status_code = status.HTTP_404_NOT_FOUND
         return {
                 "error_message": "Invalid ID passed"
@@ -87,16 +92,19 @@ def check_valid(item_id: str, response: Response, file_path: str = FEED_PATH, ap
     ids_file = get_id_filename(file_path)
 
     if ids_file is None:
+        logging.info("Check valid: Generating new IDs file due to timeout")
         current_status_code = execute_download_script(file_path.split("/")[-1])
 
         # Check for mutex lock
         while current_status_code != 0:
+            logging.info("Check valid: Busy-wait cycle")
             time.sleep(2)
             current_status_code = execute_download_script(file_path.split("/")[-1])
 
     # Persistent error
     ids_file = get_id_filename(file_path)
     if ids_file is None:
+        logging.error("Check valid: Persistent non-existence file error")
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {
             "error_message": "Server error"
@@ -121,14 +129,20 @@ def check_valid(item_id: str, response: Response, file_path: str = FEED_PATH, ap
 """
 @app.get("/feed")
 def get_feed(response: Response, k: int = FEED_LENGTH, file_path: str = FEED_PATH, api_key: str = OMDB_API_KEY) -> dict:
+    # Keep track of time of execution
+    start_time = time.time()
+
     # Check for recent file
     ids_file = get_id_filename(file_path)
 
+
     if ids_file is None:
+        logging.info("Feed: Generating new IDs file due to timeout")
         current_status_code = execute_download_script(file_path.split("/")[-1])
 
         # Check for mutex lock
         while current_status_code != 0:
+            logging.info("Feed: Busy-wait cycle")
             time.sleep(2)
             current_status_code = execute_download_script(file_path.split("/")[-1])
 
@@ -148,6 +162,8 @@ def get_feed(response: Response, k: int = FEED_LENGTH, file_path: str = FEED_PAT
         get_details(id, response, api_key) for id in sample_ids
     ]
 
+    end_time = time.time()
+    logging.info(f"Feed of length {k} generated in {end_time - start_time} ms")
     return {
         "feed" : responses_json
     }

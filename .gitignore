@@ -138,3 +138,6 @@ spe-project-env/
 
 # Package lock files
 **/package-lock.json
+
+# Generated lock files
+**/*.lock

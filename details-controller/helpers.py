@@ -15,7 +15,12 @@ import random
 def execute_download_script(directory_name: str = "data") -> int:
     # Navigate to the `json-data` directory and run the download script
     os.chdir("./json-data/")
-    script_execution = subprocess.run([f"./download.sh {directory_name}"], shell = True)
+
+    # Generate lock file
+    subprocess.run(["touch sample.lock"], shell = True)
+
+    # Run the script with `flock` command
+    script_execution = subprocess.run([f'flock sample.lock --command "./download.sh {directory_name}"'], shell = True)
 
     # Navigate back to parent directory to aid in multiple calls
     os.chdir("../")

@@ -71,10 +71,7 @@ const authenticateToken = (req, res, next) => {
 }
 
 // Check and see if the SECURE_ROUTES flag is set
-var excludedRoutes = ["/", "/auth/register", "/auth/login", "/reviews/new", "/reviews/fetch"];
-if(process.env.SECURE_ROUTES === "true"){
-    excludedRoutes = ["/", "/auth/register", "/auth/login", "/reviews/fetch"];
-}
+const excludedRoutes = ["/", "/auth/register", "/auth/login", "/reviews/fetch"];
 
 
 app.use(

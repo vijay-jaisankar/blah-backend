@@ -135,3 +135,6 @@ spe-project-env/
 
 # Pycache
 **/__pycache__/
+
+# Package lock files
+**/package-lock.json

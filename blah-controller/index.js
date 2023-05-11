@@ -1,12 +1,12 @@
 const express = require('express');
 require('dotenv').config();
 const bodyParser = require("body-parser");
-const jwt = require("jsonwebtoken");
-const expressJwt = require("express-jwt");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
 const PORT = 3000;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 // Request headers
 app.use(cors());
@@ -32,32 +32,18 @@ app.use(function (req, res, next) {
     next();
 });
 
-// Express middleware
-
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
-
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-}
-
-// Excluded routes
-const excludedRoutes = ["/"]
-
-app.use(
-    expressJwt({
-        secret: process.env.TOKEN_SECRET,
-        algorithms: ["HS256"],
-    }).unless({ path: excludedRoutes })
-);
 
 app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(
+    DATABASE_URL, 
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }
+).then(() => console.log("MongoDB connected"))
+.catch(err => console.log(err));
 
 
 // Run the app

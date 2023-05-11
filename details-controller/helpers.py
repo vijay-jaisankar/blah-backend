@@ -73,3 +73,20 @@ def get_random_ids(filename: str, k: int) -> Optional[List[str]]:
     random_samples = random.sample(all_ids, k = k)
 
     return random_samples
+
+"""
+    Read the ID file and check if the given ID exists
+"""
+def check_id_validity(filename: str, given_id: str) -> bool:
+    # Base case
+    if filename is None or given_id is None or filename == "" or given_id == "":
+        return False
+    
+    # Read the file
+    with open(filename, "r") as f:
+        for line in f.readlines():
+            target_id = line.replace("\n","")
+            if target_id == given_id:
+                return True
+            
+    return False

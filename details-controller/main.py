@@ -7,7 +7,7 @@ import requests
 import time
 import logging
 
-logging.basicConfig(filename='./log/python_combined.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='./log/python_combined.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
 
 
 

@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const expressJwt = require("express-jwt");
 
 const app = express();
 const PORT = 3000;
@@ -43,6 +45,29 @@ app.use(function (req, res, next) {
 
 app.use(express.json());
 
+// Middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}
+
+const excludedRoutes = ["/", "/auth/register", "/auth/login"];
+
+app.use(
+    expressJwt({
+        secret: process.env.TOKEN_SECRET,
+        algorithms: ["HS256"],
+    }).unless({ path: excludedRoutes })
+);
+
 // Connect to MongoDB
 mongoose.connect(
     DATABASE_URL, 
@@ -56,6 +81,13 @@ mongoose.connect(
 // Set up the models
 const Review = mongoose.model('Review', models.reviewSchema);
 const User = mongoose.model('User', models.userSchema);
+
+// Base API route
+app.get("/", function (req, res, next) {
+    res.json({
+        message: `The API is running on port ${PORT}.`,
+    });
+});
 
 // Sign up
 app.post("/auth/register", (req, res) => {
@@ -131,7 +163,10 @@ app.post("/auth/login", (req, res) => {
                     hashedPassword = list[0]['password'];
                     bcrypt.compare(password, hashedPassword, function(err, result) {
                         if(result === true){
-                            return res.status(200).send("logged in successfully");
+                            let token = jwt.sign({ userId: list[0].user_id }, process.env.TOKEN_SECRET, {
+                                expiresIn: "1h",
+                            });
+                            return res.send({ "authorised" :token });
                         }
                         else{
                             return res.status(403).send("unauthorised");

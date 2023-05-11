@@ -52,6 +52,50 @@ mongoose.connect(
 const Review = mongoose.model('Review', models.reviewSchema);
 const User = mongoose.model('User', models.userSchema);
 
+// Sign up
+app.post("/auth/register", (req, res) => {
+    // Get email ID and Password
+    let email_id = req.body.email_id.toLowerCase();
+    let password = req.body.password;
+
+    // Base case
+    if (email_id === null || password === null){
+        return res.status(401).send("error in inputs");
+    }
+
+
+    // Check if email_id exists already in the collection
+    User.find({
+        "email_id": email_id
+    }).then((list) => {
+        if(list.length >= 1){
+            return res.status(403).send("user already exists");
+        }
+        else{
+            // If not, add into the collection
+            const row = new User({
+                email_id: email_id,
+                password: password,
+            });
+
+                row
+                    .save()
+                    .then(
+                        () => {
+                            console.log("User added");
+                            return res.status(200).send("user added");
+                        },
+                        (err) => {
+                            console.log("Error adding User");
+                            console.log(err);
+                            return res.status(500).send("error adding user");
+                        }
+                        
+                    );
+                }
+    })
+})
+
 // Add review
 app.post("/reviews/new/", (req, res) => {
     // Get Username and Password
@@ -74,12 +118,12 @@ app.post("/reviews/new/", (req, res) => {
         .then(
             () => {
                 console.log("Movie review added");
-                res.sendStatus(200);
+                return res.sendStatus(200);
             }, 
             (err) => {
                 console.log("Error adding review");
                 console.log(err)
-                res.sendStatus(500);
+                return res.sendStatus(500);
             }
         );
 });

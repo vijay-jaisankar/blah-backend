@@ -70,7 +70,9 @@ const authenticateToken = (req, res, next) => {
     }
 }
 
-const excludedRoutes = ["/", "/auth/register", "/auth/login"];
+// Check and see if the SECURE_ROUTES flag is set
+const excludedRoutes = ["/", "/auth/register", "/auth/login", "/reviews/fetch"];
+
 
 app.use(
     expressJwt({
@@ -132,7 +134,6 @@ app.post("/auth/register", (req, res) => {
                     return res.status(500).send("error adding user");
                 }
                 else{
-                    console.log(hash);
                     const row = new User({
                         email_id: email_id,
                         password: hash,
@@ -196,7 +197,7 @@ app.post("/auth/login", (req, res) => {
 })
 
 // Add review
-app.post("/reviews/new/", (req, res) => {
+app.post("/reviews/new", (req, res) => {
     // Get Username and Password
     let movie_id = req.body.movie_id;
     let review = req.body.review;

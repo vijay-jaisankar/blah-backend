@@ -117,6 +117,7 @@ def check_valid(item_id: str, response: Response, file_path: str = FEED_PATH, ap
             "message": "valid"
         }
     else:
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {
             "message": "invalid"
         }

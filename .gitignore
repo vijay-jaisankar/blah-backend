@@ -141,3 +141,6 @@ spe-project-env/
 
 # Generated lock files
 **/*.lock
+
+# Generated json-data/data folder
+**/json-data/data

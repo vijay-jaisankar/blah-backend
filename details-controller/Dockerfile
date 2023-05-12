@@ -8,7 +8,7 @@ WORKDIR /app
 COPY REQUIREMENTS.txt .
 
 #It will install the framework and the dependencies in the `REQUIREMENTS.txt` file.
-RUN pip install -r REQUIREMENTS.txt
+RUN pip3 install -r REQUIREMENTS.txt
 
 # Copy remaining files
 COPY . .

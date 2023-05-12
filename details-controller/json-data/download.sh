@@ -15,17 +15,13 @@ wget -q "https://datasets.imdbws.com/title.ratings.tsv.gz"
 # Extract/Decompress the files
 gzip -d title.ratings.tsv.gz
 
-# Upgrade pip and install pandas
-pip install -q --upgrade pip 
-pip install -q pandas 
-
 # Create the output file - ids_{UNIX_TIMESTAMP}.txt
 now=$(date +%s)
 touch ids_$now.txt
 
 # Extract the IDs from the TSV file
 cd -
-/usr/bin/python3 read_ids.py --tsv $TARGET/title.ratings.tsv --out $TARGET/ids_$now.txt
+/usr/local/bin/python3.8 read_ids.py --tsv $TARGET/title.ratings.tsv --out $TARGET/ids_$now.txt
 
 # Count the number of lines written
 printf "Number of titles: %s" "$(cat $TARGET/ids_$now.txt | wc -l)"

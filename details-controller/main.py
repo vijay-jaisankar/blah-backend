@@ -1,3 +1,7 @@
+import logging
+logging.basicConfig(filename='./log/details-controller.log', filemode='a', format='%(name)s CALLED %(levelname)s AT %(asctime)s', level=logging.DEBUG, datefmt='%Y-%m-%d %H:%M:%S')
+
+
 from fastapi import FastAPI, Response, status
 
 
@@ -5,9 +9,8 @@ import os
 from dotenv import load_dotenv
 import requests
 import time
-import logging
 
-logging.basicConfig(filename='./log/python_combined.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+
 
 
 
@@ -20,8 +23,8 @@ FEED_LENGTH = int(os.getenv('FEED_LENGTH'))
 FEED_PATH = os.getenv('FEED_PATH')
 
 
-
 app = FastAPI()
+
 
 """
     Base route to check if the API is up

@@ -89,4 +89,4 @@ app.listen(port, () => {
     console.log(`Listening at Port ${port}`);
 });
 
-module.exports = app;
+module.exports = {app, getSentimentOfText};

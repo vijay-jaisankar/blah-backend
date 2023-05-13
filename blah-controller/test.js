@@ -47,7 +47,7 @@ it("Invalid users should not be able to log in", async () => {
 it("Mongo: Fetch reviews", async () => {
     await pactum
         .spec()
-        .get("http://127.0.0.1:3000/reviews/fetch")
+        .post("http://127.0.0.1:3000/reviews/fetch")
         .withBody({
                 "movie_id" : "tt3896198"
         })

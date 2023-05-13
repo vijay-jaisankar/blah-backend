@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "mocha test.js"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "winston": "^3.8.2"
   },
   "devDependencies": {
-    "bcrypt": "^5.1.0"
+    "bcrypt": "^5.1.0",
+    "mocha": "^10.2.0"
   }
 }

@@ -6,31 +6,31 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: node
+      app: node-api
   template:
     metadata:
       labels:
-        app: node
+        app: node-api
     spec:
       containers:
-      - name: node
+      - name: node-api
         image: thehungrypigeon/reviewdetails
         resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 8000
+        - containerPort: 3000
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: fast-api-service
+  name: node-api-service
 spec:
   selector:
-    app: fast-api
+    app: node-api
   ports:
-  - port: 8000
-    targetPort: 8000
+  - port: 3000
+    targetPort: 3000
   type: LoadBalancer

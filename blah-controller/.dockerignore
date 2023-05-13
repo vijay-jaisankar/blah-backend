@@ -1,2 +1,5 @@
 package-lock.json
 node_modules
+.env.examples
+Dockerfile
+review-details-deployment.yaml

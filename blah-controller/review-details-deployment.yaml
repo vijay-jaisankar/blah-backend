@@ -6,14 +6,14 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: node
+      app: node-api
   template:
     metadata:
       labels:
-        app: node
+        app: node-api
     spec:
       containers:
-      - name: node
+      - name: node-api
         image: thehungrypigeon/reviewdetails
         resources:
           limits:
@@ -26,10 +26,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fast-api-service
+  name: node-api-service
 spec:
   selector:
-    app: fast-api
+    app: node-api
   ports:
   - port: 3000
     targetPort: 3000

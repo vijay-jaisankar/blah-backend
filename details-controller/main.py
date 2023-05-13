@@ -11,7 +11,7 @@ logging.basicConfig(filename='./log/python_combined.log', filemode='a', format='
 
 
 
-from helpers import execute_download_script, get_id_filename, get_random_ids, check_id_validity
+from helpers import execute_download_script, get_id_filename, get_random_ids, check_id_validity, get_highest_ids
 
 # Environment variables
 load_dotenv()
@@ -165,6 +165,44 @@ def get_feed(response: Response, k: int = FEED_LENGTH, file_path: str = FEED_PAT
 
     end_time = time.time()
     logging.info(f"Feed of length {k} generated in {end_time - start_time} ms")
+    return {
+        "feed" : responses_json
+    }
+
+"""
+    Get the most recent movies within a 24 hour SLA
+"""
+@app.get("/recent")
+def get_recent(response: Response, k: int = FEED_LENGTH, file_path: str = FEED_PATH, api_key: str = OMDB_API_KEY) -> dict:
+    # Check for recent file
+    ids_file = get_id_filename(file_path)
+
+    if ids_file is None:
+        logging.info("Recent movies: Generating new IDs file due to timeout")
+        current_status_code = execute_download_script(file_path.split("/")[-1])
+
+        # Check for mutex lock
+        while current_status_code != 0:
+            logging.info("Recent movies: Busy-wait cycle")
+            time.sleep(2)
+            current_status_code = execute_download_script(file_path.split("/")[-1])
+
+    # Persistent error
+    ids_file = get_id_filename(file_path)
+    if ids_file is None:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {
+            "error_message": "Server error"
+        }
+    
+
+    # If recent file exists, get random sample of the ids; if not, call the download script and use the generated file
+    sample_ids = get_highest_ids(ids_file, k)
+    sample_ids = [x.replace("\n", "") for x in sample_ids]
+    responses_json = [
+        get_details(id, response, api_key) for id in sample_ids
+    ]
+
     return {
         "feed" : responses_json
     }

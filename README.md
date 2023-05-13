@@ -1,5 +1,5 @@
 # blah-backend
-Backend containing the IMDB connector, review storage, and (experimental) review sentiment analysis functionalities of `blah`.
+Backend repo containing the IMDB connector, review storage, and (experimental) review sentiment analysis functionalities of `blah`.
 
 ## Code
 [Frontend repo](https://github.com/jaggu21/blah-frontend/)    

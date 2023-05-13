@@ -29,16 +29,16 @@ else
    python_exec=/usr/bin/python3
 fi
 
-# Check if script is running inside Github actions server
-if [ ! -z "$CI" ]; then
-   python_exec=/opt/hostedtoolcache/Python/3.8.16/x64/bin/python
+# Check if script is running inside Render server
+if [ ! -z "$RENDER" ]; then
+   python_exec=/usr/local/lib/python3.8
 else
    python_exec=/usr/bin/python3
 fi
 
-# Check if script is running inside Render server
-if [ ! -z "$RENDER" ]; then
-   python_exec=/usr/local/lib/python3.8
+# Check if script is running inside Github actions server
+if [ ! -z "$CI" ]; then
+   python_exec=/opt/hostedtoolcache/Python/3.8.16/x64/bin/python
 else
    python_exec=/usr/bin/python3
 fi

@@ -31,7 +31,7 @@ fi
 
 # Check if script is running inside Github actions server
 if [ ! -z "$CI" ]; then
-   python_exec=/opt/hostedtoolcache/Python/3.8.16/x64
+   python_exec=/opt/hostedtoolcache/Python/3.8.16/x64/bin/python
 else
    python_exec=/usr/bin/python3
 fi

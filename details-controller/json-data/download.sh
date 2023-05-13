@@ -28,6 +28,11 @@ else
    python_exec=/usr/bin/python3
 fi
 
+# Check if script is running inside Github actions server
+if [[ ! -z "$CI" ]]; then
+    echo "Inside github actions server!"
+fi
+
 # Extract the IDs from the TSV file
 cd -
 $python_exec read_ids.py --tsv $TARGET/title.ratings.tsv --out $TARGET/ids_$now.txt

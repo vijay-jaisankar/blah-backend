@@ -49,32 +49,24 @@ app.use(express.json());
 // Middleware
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
-    if(authHeader === null || authHeader === ""){
+    if (token == null) {
         logger.error("Authenticate: Invalid inputs");
         return res.sendStatus(401);
     }
 
     else{
-        const token = authHeader && authHeader.split(" ")[1];
-    
-        if (token === null || token === "") {
-            logger.error("Authenticate: Invalid inputs");
-            return res.sendStatus(401);
-        }
-    
-        else{
-            jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-                if (err) {
-                    logger.error(`Authenticate: Error while generating token: ${err.stack? err.stack : null}`);
-                    return res.sendStatus(403);
-                }
-                else{
-                    req.user = user;
-                    next();
-                }
-            });
-        }
+        jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+            if (err) {
+                logger.error(`Authenticate: Error while generating token: ${err.stack? err.stack : null}`);
+                return res.sendStatus(403);
+            }
+            else{
+                req.user = user;
+                next();
+            }
+        });
     }
 }
 

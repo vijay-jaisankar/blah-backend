@@ -19,18 +19,9 @@ gzip -d title.ratings.tsv.gz
 now=$(date +%s)
 touch ids_$now.txt
 
-# Find the python executable
-python_exec=/usr/bin/python3
-
-if grep -q docker /proc/1/cgroup; then 
-   python_exec=/usr/local/bin/python3.8 
-else
-   python_exec=/usr/bin/python3
-fi
-
 # Extract the IDs from the TSV file
 cd -
-$python_exec read_ids.py --tsv $TARGET/title.ratings.tsv --out $TARGET/ids_$now.txt
+/usr/local/bin/python3.8 read_ids.py --tsv $TARGET/title.ratings.tsv --out $TARGET/ids_$now.txt
 
 # Count the number of lines written
 printf "Number of titles: %s" "$(cat $TARGET/ids_$now.txt | wc -l)"

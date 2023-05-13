@@ -5,17 +5,14 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "*" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "*" ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./blah-controller/
 
     strategy:
       matrix:
@@ -29,6 +26,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: './blah-controller/package-lock.json'
+    - run: cd blah-controller/ # Change directory into the review controller
     - run: npm ci
     - run: npm run build --if-present

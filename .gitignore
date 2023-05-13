@@ -136,14 +136,11 @@ spe-project-env/
 # Pycache
 **/__pycache__/
 
-# Package lock files - revoked to make Github actions work
-# **/package-lock.json
+# Package lock files
+**/package-lock.json
 
 # Generated lock files
 **/*.lock
 
 # Generated json-data/data folder
 **/json-data/data
-
-# Pytest cache
-**/.pytest_cache

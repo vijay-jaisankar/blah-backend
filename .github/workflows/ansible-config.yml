@@ -1,0 +1,29 @@
+name: Blah-Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+
+    - uses: azure/setup-kubectl@v3
+      id: install 
+
+    - name: Run Playbook
+      shell: bash
+      run: ansible-playbook -i inventory ansible-playbook.yml 

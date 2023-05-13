@@ -31,7 +31,7 @@ fi
 
 # Check if script is running inside Render server
 if [ ! -z "$RENDER" ]; then
-   python_exec=/usr/local/lib/python3.8
+   python_exec=python
 else
    python_exec=/usr/bin/python3
 fi

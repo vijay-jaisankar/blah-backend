@@ -237,7 +237,7 @@ app.post("/reviews/new", (req, res) => {
 });
 
 // Get reviews for a particular movie_id
-app.get("/reviews/fetch", (req, res) => {
+app.post("/reviews/fetch", (req, res) => {
     // Get movie ID
     let movie_id = req.body.movie_id;
 

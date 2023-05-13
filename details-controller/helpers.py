@@ -69,6 +69,12 @@ def get_random_ids(filename: str, k: int) -> Optional[List[str]]:
         for line in f.readlines():
             all_ids.append(line)
 
+    # Get k IDs
+    random_samples = random.sample(all_ids, k = k)
+
+    return random_samples
+
+
 """
     Read the ID file and select the k highest IDs, where k is a parameter passed to the function
 """
@@ -84,8 +90,8 @@ def get_highest_ids(filename: str, k: int) -> Optional[List[str]]:
             all_ids.append(line)
 
     # Get k IDs
-    all_ids.sort(ascending = False)
-    samples = all_ids[:k]
+    all_ids.sort()
+    samples = all_ids[-k:]
 
     return samples
 

@@ -43,3 +43,10 @@ def test_check_valid():
 def test_get_feed():
     response = client.get("/feed")
     assert response.status_code == 200
+
+"""
+    Vacuously test the `recent` route
+"""
+def test_get_recent():
+    response = client.get("/recent")
+    assert response.status_code == 200

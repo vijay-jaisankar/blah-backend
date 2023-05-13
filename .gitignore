@@ -144,3 +144,6 @@ spe-project-env/
 
 # Generated json-data/data folder
 **/json-data/data
+
+# Pytest cache
+**/.pytest_cache

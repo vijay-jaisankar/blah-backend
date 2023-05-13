@@ -22,12 +22,12 @@ spec:
         ports:
         - containerPort: 9000
         volumeMounts:
-        - mountPath: ./results
+        - mountPath: results
           name: sentiment-volume
       volumes:
       - name: sentiment-volume
         hostPath:
-          path: ./results
+          path: {{path}}/results
           type: DirectoryOrCreate
 ---
 

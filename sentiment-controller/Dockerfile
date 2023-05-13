@@ -13,7 +13,7 @@ RUN npm install
 # Copy remaining files
 COPY . .
 
-# Expose port 3000
+# Expose port 9000
 EXPOSE 9000
 
 # Start and run the application container

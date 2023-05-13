@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './blah-controller'
+        working-directory: ./blah-controller/
 
     strategy:
       matrix:
@@ -29,7 +29,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: './blah-controller/package-lock.json'
     - run: npm ci
-      working-directory: './blah-controller'
     - run: npm run build --if-present
-      working-directory: './blah-controller'

@@ -64,10 +64,17 @@ app.post("/sentiment", async function (req, res) {
     let text = req.body.text;
     try {
         let summaryValue = await getSentimentOfText(text);
-        if(summaryValue < 0)    return res.json({sentiment: "negative"});
+        if(summaryValue < 0){
+            return res.json({sentiment: "negative"});
+        }    
         else{
-            if(summaryValue < 0.3) return res.json({sentiment: "neutral"});
-            else    return res.json({sentiment: "positive"});
+            if(summaryValue < 0.3){
+                return res.json({sentiment: "neutral"});
+            }
+            else{
+                return res.json({sentiment: "positive"});
+            }    
+            
         }
 
     } catch (error) {

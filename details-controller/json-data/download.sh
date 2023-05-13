@@ -29,8 +29,8 @@ else
 fi
 
 # Check if script is running inside Github actions server
-if [[ ! -z "$CI" ]]; then
-    echo "Inside github actions server!"
+if [ ! -z "$CI" ]; then
+   echo "Inside github actions server!"
 fi
 
 # Extract the IDs from the TSV file

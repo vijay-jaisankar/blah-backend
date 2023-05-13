@@ -4,33 +4,25 @@ Imports
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const winston = require('winston');
 
-const MindsDB = require("mindsdb-js-sdk");
+const Sentiment = require("sentiment");
+var sentiment = new Sentiment();
 
+// Logger setup
+const logger = winston.createLogger({
+    format: winston.format.json(),
+	transports: [new winston.transports.File({
+        filename: './results/sentiment.log',
+	})],
+});
 
-// MindsDB setup
-const user = {
-    user: process.env.MINDSDB_USER,
-    password: process.env.MINDSDB_PASS,
-};
-
-const connectToMindsDB = async (user) => {
-    await MindsDB.default.connect(user);
-    console.log("Connected to MindsDB!");
-};
 
 const getSentimentOfText = async (text) => {
-    const model = await MindsDB.default.Models.getModel(
-        "sentiment",
-        "mindsdb"
-    );
-
-    const queryOptions = {
-        where: [`comment = "${text}"`],
-    };
-
-    const prediction = await model.query(queryOptions);
-    return prediction;
+    const prediction = sentiment.analyze(text);
+    const value = prediction["comparative"];
+    logger.info(`Input: ${text}; Score: ${value}`);
+    return value;
 };
 
 // Express API setup
@@ -71,13 +63,16 @@ app.get("/", function (req, res) {
 app.post("/sentiment", async function (req, res) {
     let text = req.body.text;
     try {
-        await connectToMindsDB(user);
-        let summaryText = await getSentimentOfText(text);
-        let retValue = summaryText["data"]["PRED"];
-        res.json({ summary: retValue });
+        let summaryValue = await getSentimentOfText(text);
+        if(summaryValue < 0)    return res.json({sentiment: "negative"});
+        else{
+            if(summaryValue < 0.3) return res.json({sentiment: "neutral"});
+            else    return res.json({sentiment: "positive"});
+        }
+
     } catch (error) {
         console.log(`Error: ${error}`);
-        res.json(error);
+        return res.json({message: "error"});
     }
 });
 

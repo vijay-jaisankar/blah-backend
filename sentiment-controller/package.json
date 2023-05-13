@@ -17,6 +17,7 @@
     "express-async-handler": "^1.2.0",
     "mindsdb-js-sdk": "^2.2.1",
     "pactum": "^3.4.0",
-    "sentiment": "^5.0.2"
+    "sentiment": "^5.0.2",
+    "winston": "^3.8.2"
   }
 }

@@ -1,0 +1,4 @@
+{
+	"movie_id" : "tt3896198",
+	"review" : "The test user still loves this movie even without the JWT token, this time inside a docker container INSIDE KUBERNETES"
+}

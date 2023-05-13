@@ -22,6 +22,7 @@ touch ids_$now.txt
 # Find the python executable
 python_exec=/usr/bin/python3
 
+# Check if script is running inside a docker container
 if grep -q docker /proc/1/cgroup; then 
    python_exec=/usr/local/bin/python3.8 
 else
@@ -30,7 +31,9 @@ fi
 
 # Check if script is running inside Github actions server
 if [ ! -z "$CI" ]; then
-   echo "Inside github actions server!"
+   python_exec=/opt/hostedtoolcache/Python/3.8.16/x64
+else
+   python_exec=/usr/bin/python3
 fi
 
 # Extract the IDs from the TSV file

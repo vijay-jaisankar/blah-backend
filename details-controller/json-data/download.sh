@@ -19,6 +19,10 @@ gzip -d title.ratings.tsv.gz
 now=$(date +%s)
 touch ids_$now.txt
 
+# Print the python paths
+python -c "import sys; print(sys.path)"
+python3 -c "import sys; print(sys.path)"
+
 # Find the python executable
 python_exec=/usr/bin/python3
 

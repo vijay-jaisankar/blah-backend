@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 9000
 
 # Start and run the application container
-CMD yarn start
+CMD npm start

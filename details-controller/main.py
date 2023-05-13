@@ -1,5 +1,5 @@
 import logging
-logging.basicConfig(filename='./log/details-controller.log', filemode='a', format='%(name)sCALLED%(levelname)s', level=logging.DEBUG)
+logging.basicConfig(filename='./log/details-controller.log', filemode='a', format='%(name)s CALLED %(levelname)s AT %(asctime)s', level=logging.DEBUG, datefmt='%Y-%m-%d %H:%M:%S')
 
 
 from fastapi import FastAPI, Response, status

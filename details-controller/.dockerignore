@@ -1,0 +1,5 @@
+Dockerfile
+movie-details-deployment.yaml
+.env.example
+__pycache__
+.pytest_cache

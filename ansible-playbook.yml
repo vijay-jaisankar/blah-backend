@@ -1,0 +1,22 @@
+---
+- name: Blah-Backend 
+  hosts: all
+  tasks:
+    - name: Copy blah-controller Kubernetes Service File
+      copy:
+        src: ./blah-controller/review-details-deployment.yaml
+        dest: ./
+
+    - name: Copy details-controller Kubernetes Service File
+      copy:
+        src: ./details-controller/movie-details-deployment.yaml
+        dest: ./
+    
+    - name: Start minikube cluster
+      command: minikube start --driver=docker
+
+    - name: Deploy blah-controller Kubernetes container
+      command: kubectl apply -f review-details-deployment.yaml
+
+    - name: Deploy details-controller Kubernetes container
+      command: kubectl apply -f movie-details-deployment.yaml
